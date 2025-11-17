@@ -6,20 +6,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional; // <-- IMPORTANTE: Añade esta importación
 
 @Service
 public class ProductoService {
 
-    // Inyectamos nuestro DAO (Repositorio)
     @Autowired
     private ProductoRepository productoRepository;
 
-    // Método para obtener todos los productos de la BD
     public List<Producto> listarTodosLosProductos() {
         return productoRepository.findAll();
     }
     
-public void guardarProducto(Producto producto) {
+    public void guardarProducto(Producto producto) {
         productoRepository.save(producto);
+    }
+
+    // --- MÉTODO NUEVO PARA EDITAR ---
+    public Optional<Producto> buscarProductoPorId(Long id) {
+        return productoRepository.findById(id);
+    }
+
+    // --- MÉTODO NUEVO PARA ELIMINAR ---
+    public void eliminarProductoPorId(Long id) {
+        productoRepository.deleteById(id);
     }
 }

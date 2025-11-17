@@ -25,11 +25,16 @@
                 <tr th:each="producto : ${listaProductos}">
                     <td th:text="${producto.idProducto}"></td>
                     <td th:text="${producto.nombre}"></td>
-                    <td th:text="${producto.precio}"></td>
+                    <td th:text="${#numbers.formatCurrency(producto.precio)}"></td>
                     <td th:text="${producto.stock}"></td>
                     <td>
-                        <a href="#" class="btn btn-warning btn-sm">Editar</a>
-                        <a href="#" class="btn btn-danger btn-sm">Eliminar</a>
+                        <a th:href="@{/productos/editar/{id}(id=${producto.idProducto})}" class="btn btn-warning btn-sm">Editar</a>
+                        
+                        <a th:href="@{/productos/eliminar/{id}(id=${producto.idProducto})}" 
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
+                           Eliminar
+                        </a>
                     </td>
                 </tr>
                 

@@ -1,58 +1,68 @@
 package com.tuempresa.chifawufuproyecto.controller;
 
 import com.tuempresa.chifawufuproyecto.model.Producto;
-import com.tuempresa.chifawufuproyecto.service.ProductoService; // Importamos el Servicio
+import com.tuempresa.chifawufuproyecto.service.ProductoService; 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model; // Para enviar datos a la Vista
-import org.springframework.web.bind.annotation.GetMapping; // Para manejar peticiones GET
+import org.springframework.ui.Model; 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
+// --- NUEVAS IMPORTACIONES AÑADIDAS ---
+import org.springframework.web.bind.annotation.PathVariable;
+import java.util.Optional;
+
 import java.util.List;
 
-@Controller // ¡Importante! Usamos @Controller, NO @RestController
+@Controller
 public class ProductoController {
 
     @Autowired
-    private ProductoService productoService; // Inyectamos el Servicio
-    /**
-     * Este método manejará las peticiones a la URL "/productos"
-     */
+    private ProductoService productoService; 
+
     @GetMapping("/productos")
     public String verPaginaDeProductos(Model model) {
-        // 1. Obtenemos la lista de productos desde el servicio (que llama al DAO)
         List<Producto> listaProductos = productoService.listarTodosLosProductos();
-        // 2. "Ponemos" esa lista en el "Model" para que la Vista la pueda usar
-        //    Le damos el nombre "listaProductos"
         model.addAttribute("listaProductos", listaProductos);
         return "productos"; 
     }
-    // --- NUEVO MÉTODO 1: Mostrar el formulario ---
-    /**
-     * Maneja la petición a "/productos/nuevo"
-     * Muestra la página del formulario para crear un nuevo producto.
-     */
+
     @GetMapping("/productos/nuevo")
     public String mostrarFormularioDeNuevoProducto(Model model) {
-        // Creamos un objeto Producto vacío para enlazarlo al formulario
         Producto producto = new Producto();
         model.addAttribute("producto", producto);
-        
-        // Devolvemos el nombre del NUEVO archivo HTML que crearemos
         return "producto-formulario";
     }
 
-    // --- NUEVO MÉTODO 2: Guardar el formulario ---
-    /**
-     * Maneja la petición POST a "/productos/guardar"
-     * Recibe el objeto Producto rellenado desde el formulario.
-     */
     @PostMapping("/productos/guardar")
     public String guardarProducto(@ModelAttribute("producto") Producto producto) {
-        // Guardamos el producto en la base de datos usando el servicio
         productoService.guardarProducto(producto);
+        return "redirect:/productos";
+    }
+
+    // --- MÉTODO NUEVO PARA MOSTRAR EDICIÓN (PASO 9) ---
+    @GetMapping("/productos/editar/{id}")
+    public String mostrarFormularioDeEditarProducto(@PathVariable Long id, Model model) {
         
-        // Redirigimos al usuario de vuelta a la lista de productos
+        Optional<Producto> productoOptional = productoService.buscarProductoPorId(id);
+        
+        if (productoOptional.isPresent()) {
+            model.addAttribute("producto", productoOptional.get());
+            return "producto-formulario"; // Reutilizamos el formulario
+        } else {
+            return "redirect:/productos";
+        }
+    }
+
+    // --- MÉTODO NUEVO PARA ELIMINAR (PASO 10) ---
+    @GetMapping("/productos/eliminar/{id}")
+    public String eliminarProducto(@PathVariable Long id) {
+        
+        // Usamos el servicio para eliminar el producto por su ID
+        productoService.eliminarProductoPorId(id);
+        
+        // Redirigimos de vuelta a la lista de productos
         return "redirect:/productos";
     }
 }

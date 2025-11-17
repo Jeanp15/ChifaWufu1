@@ -16,6 +16,8 @@
 
                 <form th:action="@{/productos/guardar}" th:object="${producto}" method="POST">
                     
+                    <input type="hidden" th:field="*{idProducto}" />
+
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre del Producto</label>
                         <input type="text" th:field="*{nombre}" class="form-control" id="nombre" placeholder="Ej. Arroz Chaufa" required>
