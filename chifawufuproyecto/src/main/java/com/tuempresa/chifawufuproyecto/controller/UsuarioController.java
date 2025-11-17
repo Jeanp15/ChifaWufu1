@@ -19,6 +19,16 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
+    // --- NUEVO MÉTODO PARA MOSTRAR EL LOGIN ---
+    /**
+     * Muestra la página de login personalizada.
+     * Spring redirigirá a esta URL automáticamente.
+     */
+    @GetMapping("/login")
+    public String mostrarPaginaDeLogin() {
+        return "login"; // -> Llama a login.html
+    }
+
     // 1. LEER (Listar todos)
     @GetMapping("/usuarios")
     public String verPaginaDeUsuarios(Model model) {

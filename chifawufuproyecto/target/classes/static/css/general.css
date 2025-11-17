@@ -1,0 +1,45 @@
+/* --- Estilos Generales del Chifa Wu Fu --- */
+
+/* Usamos una fuente más moderna para toda la página */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f8f9fa; /* Un fondo gris claro para toda la app */
+}
+
+/* Estilo para la barra de navegación que crearemos */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.04);
+}
+
+/* Estilo para los contenedores principales de las páginas CRUD */
+.page-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 25px;
+    margin-top: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.05);
+}
+
+/* Títulos de página (ej. "Gestión de Productos") */
+h1 {
+    color: #343a40;
+    font-weight: 700;
+}
+
+/* Estilos para la página de Login */
+.login-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.login-form {
+    width: 100%;
+    max-width: 400px;
+    padding: 25px;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,.05);
+}
