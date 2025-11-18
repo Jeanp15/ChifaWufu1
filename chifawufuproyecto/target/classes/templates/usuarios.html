@@ -8,11 +8,48 @@
 </head>
 <body>
 
+    <div th:replace="~{_nav :: navbar}"></div>
+
     <div class="container mt-4 page-container">
         <h1>Gestión de Usuarios</h1>
         <hr>
+        
         <table class="table table-striped">
-            </table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre de Usuario</th>
+                    <th>Rol</th>
+                    <th>Activo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="usuario : ${listaUsuarios}">
+                    <td th:text="${usuario.idUsuario}"></td>
+                    <td th:text="${usuario.nombreUsuario}"></td>
+                    <td th:text="${usuario.rol}"></td>
+                    <td>
+                        <span th:if="${usuario.activo}" class="badge bg-success">Sí</span>
+                        <span th:unless="${usuario.activo}" class="badge bg-danger">No</span>
+                    </td>
+                    <td>
+                        <a th:href="@{/usuarios/editar/{id}(id=${usuario.idUsuario})}" class="btn btn-warning btn-sm">Editar</a>
+                        <a th:href="@{/usuarios/eliminar/{id}(id=${usuario.idUsuario})}" 
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?')">
+                           Eliminar
+                        </a>
+                    </td>
+                </tr>
+                <tr th:if="${listaUsuarios.isEmpty()}">
+                    <td colspan="5" class="text-center">
+                        Aún no hay usuarios registrados.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
         <a th:href="@{/usuarios/nuevo}" class="btn btn-primary">Agregar Nuevo Usuario</a>
     </div>
 

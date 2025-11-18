@@ -8,13 +8,46 @@
 </head>
 <body>
 
+    <div th:replace="~{_nav :: navbar}"></div>
+
     <div class="container mt-4">
         <div class="row">
             <div class="col-md-6 offset-md-3 page-container">
                 <h2>Formulario de Producto</h2>
                 <hr>
                 <form th:action="@{/productos/guardar}" th:object="${producto}" method="POST">
-                    </form>
+                    
+                    <input type="hidden" th:field="*{idProducto}" />
+
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre del Producto</label>
+                        <input type="text" th:field="*{nombre}" class="form-control" id="nombre" placeholder="Ej. Arroz Chaufa" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="precio" class="form-label">Precio (S/.)</label>
+                        <input type="number" th:field="*{precio}" class="form-control" id="precio" step="0.10" placeholder="Ej. 15.50" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="stock" class="form-label">Stock Inicial</label>
+                        <input type="number" th:field="*{stock}" class="form-control" id="stock" placeholder="Ej. 50" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="categoria" class="form-label">Categoría</label>
+                        <input type="text" th:field="*{categoria}" class="form-control" id="categoria" placeholder="Ej. Arroces">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea th:field="*{descripcion}" class="form-control" id="descripcion" rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Guardar Producto</button>
+                    <a th:href="@{/productos}" class="btn btn-secondary">Cancelar</a>
+                    
+                </form>
             </div>
         </div>
     </div>
