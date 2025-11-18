@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Punto de Venta (POS)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th.href="@{/css/general.css}" rel="stylesheet">
+</head>
+<body>
+
+    <div th:replace="~{_nav :: navbar}"></div>
+
+    <div class="container mt-4 page-container">
+        
+        <h2>Punto de Venta (Registrar Pedido)</h2>
+        <hr>
+
+        <div th:if="${globalSuccess}" class="alert alert-success" role="alert" th:text="${globalSuccess}"></div>
+        <div th:if="${globalError}" class="alert alert-danger" role="alert" th:text="${globalError}"></div>
+
+
+        <form th:action="@{/pos/guardar}" th:object="${ventaForm}" method="POST">
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="cliente" class="form-label">Cliente (Opcional)</label>
+                    <select th:field="*{idCliente}" class="form-select" id="cliente">
+                        <option value="">[Cliente General]</option>
+                        <option th:each="cliente : ${listaClientes}" 
+                                th:value="${cliente.idCliente}" 
+                                th:text="${cliente.nombre} + ' - ' + ${cliente.dniRuc}"></option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="tipoComprobante" class="form-label">Tipo de Comprobante</label>
+                    <select th:field="*{tipoComprobante}" class="form-select" id="tipoComprobante" required>
+                        <option value="Boleta">Boleta</option>
+                        <option value="Factura">Factura</option>
+                    </select>
+                </div>
+            </div>
+
+            <hr>
+            
+            <h4>Carrito de Compras</h4>
+            <table class="table" id="tabla-detalles">
+                <thead>
+                    <tr>
+                        <th style="width: 60%;">Producto</th>
+                        <th style="width: 20%;">Cantidad</th>
+                        <th style="width: 20%;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="detalle, stat : *{detalles}">
+                        <td>
+                            <select th:field="*{detalles[__${stat.index}__].idProducto}" class="form-select" required>
+                                <option value="">Seleccione un producto...</option>
+                                <option th:each="prod : ${listaProductos}"
+                                        th:value="${prod.idProducto}"
+                                        th:text="${prod.nombre} + ' (S/ ' + ${#numbers.formatDecimal(prod.precio, 1, 2)} + ' - Stock: ' + ${prod.stock} + ')'"></option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" th:field="*{detalles[__${stat.index}__].cantidad}" class="form-control" placeholder="Cant." min="1" required />
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger" onclick="eliminarFila(this)">Eliminar</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button type="button" class="btn btn-info" id="btn-agregar-producto">
+                + Agregar Producto
+            </button>
+
+            <hr>
+            
+            <div class="text-end">
+                <button type="submit" class="btn btn-success btn-lg">Registrar Venta</button>
+            </div>
+        </form>
+    </div>
+
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        
+        const listaProductos = /*[[${listaProductos}]]*/ [];
+        
+        document.getElementById("btn-agregar-producto").addEventListener("click", function() {
+            agregarFila();
+        });
+
+        function agregarFila() {
+            const tablaBody = document.getElementById("tabla-detalles").getElementsByTagName('tbody')[0];
+            const nuevoIndice = tablaBody.rows.length;
+            const nuevaFila = tablaBody.insertRow();
+
+            // Celda 1: Dropdown de Productos
+            const celdaProducto = nuevaFila.insertCell(0);
+            let selectProducto = document.createElement("select");
+            selectProducto.name = `detalles[${nuevoIndice}].idProducto`;
+            selectProducto.className = "form-select";
+            selectProducto.required = true;
+
+            let optDefecto = document.createElement("option");
+            optDefecto.value = "";
+            optDefecto.text = "Seleccione un producto...";
+            selectProducto.appendChild(optDefecto);
+
+            listaProductos.forEach(prod => {
+                let opt = document.createElement("option");
+                opt.value = prod.idProducto;
+                opt.text = `${prod.nombre} (S/ ${prod.precio.toFixed(2)} - Stock: ${prod.stock})`;
+                selectProducto.appendChild(opt);
+            });
+            celdaProducto.appendChild(selectProducto);
+
+            // Celda 2: Input de Cantidad
+            const celdaCantidad = nuevaFila.insertCell(1);
+            let inputCantidad = document.createElement("input");
+            inputCantidad.type = "number";
+            inputCantidad.name = `detalles[${nuevoIndice}].cantidad`;
+            inputCantidad.className = "form-control";
+            inputCantidad.placeholder = "Cant.";
+            inputCantidad.min = "1";
+            inputCantidad.required = true;
+            celdaCantidad.appendChild(inputCantidad);
+
+            // Celda 3: Botón de Eliminar
+            const celdaAccion = nuevaFila.insertCell(2);
+            let btnEliminar = document.createElement("button");
+            btnEliminar.type = "button";
+            btnEliminar.className = "btn btn-danger";
+            btnEliminar.innerText = "Eliminar";
+            btnEliminar.onclick = function() { eliminarFila(this); };
+            celdaAccion.appendChild(btnEliminar);
+        }
+
+        function eliminarFila(boton) {
+            const fila = boton.parentNode.parentNode;
+            const tablaBody = fila.parentNode;
+            
+            if (tablaBody.rows.length > 1) {
+                tablaBody.removeChild(fila);
+            } else {
+                alert("No se puede eliminar la última fila.");
+            }
+        }
+        
+        /*]]>*/
+    </script>
+
+</body>
+</html>

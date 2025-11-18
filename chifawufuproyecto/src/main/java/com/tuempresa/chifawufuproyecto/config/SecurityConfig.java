@@ -14,22 +14,17 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // 1. Declaramos la dependencia que necesitamos
     private final CustomUserDetailsService customUserDetailsService;
 
-    // 2. Creamos el constructor pidiendo la dependencia
-    //    Spring la inyectará aquí automáticamente.
     public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
         this.customUserDetailsService = customUserDetailsService;
     }
 
-    // 3. Este Bean se crea SIN dependencias, por lo que no hay problema
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // 4. Configuramos el "cerebro" del login
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         
@@ -43,17 +38,22 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/css/**", "/js/**").permitAll()
                 .requestMatchers("/productos/**", "/clientes/**", "/usuarios/**").hasRole("Administrador")
+                
+                // --- LÍNEA NUEVA AÑADIDA ---
+                // Damos permiso a Cajeros, Mozos y Administradores para acceder al POS
+                .requestMatchers("/pos", "/pos/guardar").hasAnyRole("Cajero", "Mozo", "Administrador")
+
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login-process") 
-                .defaultSuccessUrl("/productos", true) 
+                .defaultSuccessUrl("/pos", true) // Cambiado para ir al POS después de login
                 .failureUrl("/login?error=true")
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutUrl("/logout") // Forma moderna
+                .logoutUrl("/logout") 
                 .logoutSuccessUrl("/login?logout=true")
                 .permitAll()
             );

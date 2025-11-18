@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional; // <-- IMPORTANTE: Añade esta importación
+import java.util.Optional;
 
 @Service
 public class ProductoService {
@@ -22,13 +22,17 @@ public class ProductoService {
         productoRepository.save(producto);
     }
 
-    // --- MÉTODO NUEVO PARA EDITAR ---
     public Optional<Producto> buscarProductoPorId(Long id) {
         return productoRepository.findById(id);
     }
 
-    // --- MÉTODO NUEVO PARA ELIMINAR ---
     public void eliminarProductoPorId(Long id) {
         productoRepository.deleteById(id);
+    }
+
+    // --- MÉTODO NUEVO AÑADIDO ---
+    // Devuelve solo productos vendibles (activos y con stock)
+    public List<Producto> listarProductosParaVenta() {
+        return productoRepository.findByActivoTrueAndStockGreaterThan(0);
     }
 }
