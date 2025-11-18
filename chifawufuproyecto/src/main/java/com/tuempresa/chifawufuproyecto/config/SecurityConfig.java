@@ -37,18 +37,26 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/css/**", "/js/**").permitAll()
-                .requestMatchers("/productos/**", "/clientes/**", "/usuarios/**").hasRole("Administrador")
                 
-                // --- LÍNEA NUEVA AÑADIDA ---
-                // Damos permiso a Cajeros, Mozos y Administradores para acceder al POS
+                // Solo Admin
+                .requestMatchers("/productos/**", "/clientes/**", "/usuarios/**", "/reportes").hasRole("Administrador")
+                
+                // Admin, Cajero y Mozo
                 .requestMatchers("/pos", "/pos/guardar").hasAnyRole("Cajero", "Mozo", "Administrador")
+                
+                // Admin y Cajero
+                .requestMatchers("/cierre-caja").hasAnyRole("Cajero", "Administrador")
+
+                // --- LÍNEA NUEVA AÑADIDA ---
+                // Admin y Cocinero
+                .requestMatchers("/cocina", "/cocina/**").hasAnyRole("Cocinero", "Administrador")
 
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login-process") 
-                .defaultSuccessUrl("/pos", true) // Cambiado para ir al POS después de login
+                .defaultSuccessUrl("/pos", true) 
                 .failureUrl("/login?error=true")
                 .permitAll()
             )

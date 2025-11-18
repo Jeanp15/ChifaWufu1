@@ -42,9 +42,10 @@ public class VentaService {
         nuevaVenta.setUsuario(usuarioLogueado);
         nuevaVenta.setCliente(clienteVenta);
         nuevaVenta.setTipoComprobante(ventaForm.getTipoComprobante());
+        nuevaVenta.setMetodoDePago(ventaForm.getMetodoDePago());
         
-        // --- LÍNEA MODIFICADA ---
-        nuevaVenta.setMetodoDePago(ventaForm.getMetodoDePago()); // Guardamos el método de pago
+        // --- LÍNEA NUEVA AÑADIDA ---
+        nuevaVenta.setEstado("PENDIENTE"); // El estado inicial de toda venta
         
         nuevaVenta.setTotal(BigDecimal.ZERO);
         nuevaVenta = ventaRepository.save(nuevaVenta);
@@ -90,14 +91,9 @@ public class VentaService {
         return ventaRepository.findByFechaBetween(inicioDelDia, finDelDia);
     }
     
-    // --- MÉTODO NUEVO AÑADIDO ---
     public CierreCajaDTO realizarCierreCaja(LocalDate fecha) {
-        // 1. Buscamos las ventas del día
         List<Venta> ventasDelDia = buscarVentasPorRangoDeFechas(fecha, fecha);
-        
-        // 2. Creamos el DTO (toda la lógica de cálculo está en el constructor del DTO)
         CierreCajaDTO cierre = new CierreCajaDTO(ventasDelDia);
-        
         return cierre;
     }
 }

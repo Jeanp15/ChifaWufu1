@@ -4,16 +4,16 @@ import com.tuempresa.chifawufuproyecto.model.Venta;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime; // <-- Añade esta importación
-import java.util.List;          // <-- Añade esta importación
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface VentaRepository extends JpaRepository<Venta, Long> {
     
-    // --- MÉTODO NUEVO AÑADIDO ---
-    /**
-     * Busca todas las ventas que ocurrieron entre dos momentos (fecha y hora).
-     * Spring Data JPA escribirá el SQL: "SELECT * FROM venta WHERE fecha BETWEEN ? AND ?"
-     */
+    // Método para Reportes
     List<Venta> findByFechaBetween(LocalDateTime inicio, LocalDateTime fin);
+
+    // --- MÉTODO NUEVO AÑADIDO ---
+    // Método para la Cocina (busca por estado y ordena por fecha)
+    List<Venta> findByEstadoOrderByFechaAsc(String estado);
 }

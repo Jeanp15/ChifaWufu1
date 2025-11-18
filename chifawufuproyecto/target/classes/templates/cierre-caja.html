@@ -91,7 +91,9 @@
                     <td th:text="${venta.cliente != null ? venta.cliente.nombre : 'Cliente General'}"></td>
                     <td>
                         <span class="badge" 
-                              th:classappend="${venta.metodoDePago == 'Efectivo' ? 'bg-success' : (venta.metodoDePago == 'Tarjeta' ? 'bg-info' : 'bg-secondary')}"
+                              th:classappend="${venta.metodoDePago == 'Efectivo' ? 'bg-success' : 
+                                               (venta.metodoDePago == 'Tarjeta' ? 'bg-info' : 
+                                               (venta.metodoDePago == 'Yape' || venta.metodoDePago == 'Plin' ? 'bg-secondary' : 'bg-light text-dark'))}"
                               th:text="${venta.metodoDePago}"></span>
                     </td>
                     <td th:text="${#numbers.formatDecimal(venta.total, 1, 2)}"></td>

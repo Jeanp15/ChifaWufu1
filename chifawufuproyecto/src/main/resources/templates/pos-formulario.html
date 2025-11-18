@@ -94,67 +94,13 @@
 
     <div th:replace="~{_nav :: footer-scripts}"></div>
 
-    <script th:inline="javascript">
+    <script thol.in="javascript">
         /*<![CDATA[*/
-        
-        const listaProductos = /*[[${listaProductos}]]*/ [];
-        
-        document.getElementById("btn-agregar-producto").addEventListener("click", function() {
-            agregarFila();
-        });
-
-        function agregarFila() {
-            const tablaBody = document.getElementById("tabla-detalles").getElementsByTagName('tbody')[0];
-            const nuevoIndice = tablaBody.rows.length;
-            const nuevaFila = tablaBody.insertRow();
-
-            const celdaProducto = nuevaFila.insertCell(0);
-            let selectProducto = document.createElement("select");
-            selectProducto.name = `detalles[${nuevoIndice}].idProducto`;
-            selectProducto.className = "form-select";
-            selectProducto.required = true;
-            let optDefecto = document.createElement("option");
-            optDefecto.value = "";
-            optDefecto.text = "Seleccione un producto...";
-            selectProducto.appendChild(optDefecto);
-            listaProductos.forEach(prod => {
-                let opt = document.createElement("option");
-                opt.value = prod.idProducto;
-                opt.text = `${prod.nombre} (S/ ${prod.precio.toFixed(2)} - Stock: ${prod.stock})`;
-                selectProducto.appendChild(opt);
-            });
-            celdaProducto.appendChild(selectProducto);
-
-            const celdaCantidad = nuevaFila.insertCell(1);
-            let inputCantidad = document.createElement("input");
-            inputCantidad.type = "number";
-            inputCantidad.name = `detalles[${nuevoIndice}].cantidad`;
-            inputCantidad.className = "form-control";
-            inputCantidad.placeholder = "Cant.";
-            inputCantidad.min = "1";
-            inputCantidad.required = true;
-            celdaCantidad.appendChild(inputCantidad);
-
-            const celdaAccion = nuevaFila.insertCell(2);
-            let btnEliminar = document.createElement("button");
-            btnEliminar.type = "button";
-            btnEliminar.className = "btn btn-danger";
-            btnEliminar.innerText = "Eliminar";
-            btnEliminar.onclick = function() { eliminarFila(this); };
-            celdaAccion.appendChild(btnEliminar);
-        }
-
-        function eliminarFila(boton) {
-            const fila = boton.parentNode.parentNode;
-            const tablaBody = fila.parentNode;
-            if (tablaBody.rows.length > 1) {
-                tablaBody.removeChild(fila);
-            } else {
-                alert("No se puede eliminar la última fila.");
-            }
-        }
-        
+            // Pasamos los datos del servidor a una variable JS global
+            const listaProductos = /*[[${listaProductos}]]*/ [];
         /*]]>*/
     </script>
+    <script th:src="@{/js/pos-script.js}"></script>
+
 </body>
 </html>

@@ -24,14 +24,17 @@ public class Venta {
     private BigDecimal total;
 
     @Column(nullable = false)
-    private String tipoComprobante; // "Boleta" o "Factura"
+    private String tipoComprobante;
+
+    @Column(nullable = false, length = 20)
+    private String metodoDePago;
 
     // --- CAMPO NUEVO AÑADIDO ---
+    // Estados: PENDIENTE, LISTO, PAGADO
     @Column(nullable = false, length = 20)
-    private String metodoDePago; // "Efectivo", "Tarjeta", "Yape", "Plin"
+    private String estado = "PENDIENTE";
 
     // --- RELACIONES ---
-
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
