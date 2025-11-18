@@ -8,10 +8,12 @@ import java.util.List;
 @Data
 public class VentaFormDTO {
 
-    private Long idCliente; // ID del cliente (opcional)
-    private String tipoComprobante; // "Boleta" o "Factura"
+    private Long idCliente;
+    private String tipoComprobante;
     
-    // El "carrito"
+    // --- CAMPO NUEVO AÑADIDO ---
+    private String metodoDePago;
+
     private List<VentaDetalleDTO> detalles = new ArrayList<>();
 
     public VentaFormDTO() {

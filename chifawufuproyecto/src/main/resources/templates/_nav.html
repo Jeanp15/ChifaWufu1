@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
 </head>
 <body>
 
-<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark" sec:authorize="isAuthenticated()">
     <div class="container-fluid">
         
         <a class="navbar-brand" th:href="@{/pos}">Chifa Wu Fu</a>
@@ -17,26 +17,38 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="hasAnyRole('Administrador', 'Cajero', 'Mozo')">
                     <a class="nav-link active" th:href="@{/pos}" style="font-weight: bold; color: #ffc107;">
                         PUNTO DE VENTA
                     </a>
                 </li>
                 
-                <li class="nav-item" th:if="${#authorization.expression('hasRole(''Administrador'')')}">
-                    <a class="nav-link" th:href="@{/productos}">Gestión Productos</a>
+                <li class="nav-item" sec:authorize="hasAnyRole('Administrador', 'Cajero')">
+                    <a class="nav-link" th:href="@{/cierre-caja}">Cierre de Caja</a>
                 </li>
-                <li class="nav-item" th:if="${#authorization.expression('hasRole(''Administrador'')')}">
-                    <a class="nav-link" th:href="@{/clientes}">Gestión Clientes</a>
+                
+                <li class="nav-item" sec:authorize="hasRole('Administrador')">
+                    <a class="nav-link" th:href="@{/reportes}">Reporte General</a>
                 </li>
-                <li class="nav-item" th:if="${#authorization.expression('hasRole(''Administrador'')')}">
-                    <a class="nav-link" th:href="@{/usuarios}">Gestión Usuarios</a>
+                <li class="nav-item dropdown" sec:authorize="hasRole('Administrador')">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Gestión
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownAdmin">
+                        <li><a class="dropdown-item" th:href="@{/productos}">Gestión Productos</a></li>
+                        <li><a class="dropdown-item" th:href="@{/clientes}">Gestión Clientes</a></li>
+                        <li><a class="dropdown-item" th:href="@{/usuarios}">Gestión Usuarios</a></li>
+                    </ul>
                 </li>
-                </ul>
+            </ul>
 
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <form th:action="@{/logout}" method="POST">
+                    <span class="navbar-text me-2 text-white">
+                        Hola, <strong sec:authentication="name">Usuario</strong>
+                    </span>
+                    
+                    <form th:action="@{/logout}" method="POST" style="display: inline;">
                         <button type="submit" class="btn btn-outline-warning">Cerrar Sesión</button>
                     </form>
                 </li>
@@ -44,6 +56,10 @@
         </div>
     </div>
 </nav>
+
+<th:block th:fragment="footer-scripts">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</th:block>
 
 </body>
 </html>

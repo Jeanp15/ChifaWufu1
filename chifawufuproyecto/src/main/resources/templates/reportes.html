@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Ventas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/general.css}" rel="stylesheet">
+</head>
+<body>
+
+    <div th:replace="~{_nav :: navbar}"></div>
+
+    <div class="container mt-4 page-container">
+        
+        <div class="d-flex justify-content-between align-items-center">
+            <h1>Reporte General de Ventas</h1>
+            <div class="card bg-success text-white" style="width: 18rem;">
+                <div class="card-body text-center">
+                    <h5 class="card-title">TOTAL VENDIDO</h5>
+                    <h2 class="card-text" th:text="${#numbers.formatCurrency(totalGeneral)}">S/ 0.00</h2>
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <form th:action="@{/reportes}" method="GET" class="row g-3 align-items-end mb-3">
+            <div class="col-auto">
+                <label for="fechaInicio" class="form-label">Fecha Inicio</label>
+                <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" th:value="${fechaInicio}">
+            </div>
+            <div class="col-auto">
+                <label for="fechaFin" class="form-label">Fecha Fin</label>
+                <input type="date" class="form-control" id="fechaFin" name="fechaFin" th:value="${fechaFin}">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </div>
+        </form>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID Venta</th>
+                    <th>Fecha y Hora</th>
+                    <th>Cajero</th>
+                    <th>Cliente</th>
+                    <th>Comprobante</th>
+                    <th>Método Pago</th>
+                    <th>Total (S/.)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="venta : ${listaVentas}">
+                    <td th:text="${venta.idVenta}"></td>
+                    <td th:text="${#temporals.format(venta.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${venta.usuario.nombreUsuario}"></td>
+                    <td th:text="${venta.cliente != null ? venta.cliente.nombre : 'Cliente General'}"></td>
+                    <td th:text="${venta.tipoComprobante}"></td>
+                    <td th:text="${venta.metodoDePago}"></td>
+                    <td th:text="${#numbers.formatDecimal(venta.total, 1, 2)}"></td>
+                </tr>
+                <tr th:if="${listaVentas.isEmpty()}">
+                    <td colspan="7" class="text-center">
+                        No se encontraron ventas para este rango de fechas.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div th:replace="~{_nav :: footer-scripts}"></div>
+</body>
+</html>

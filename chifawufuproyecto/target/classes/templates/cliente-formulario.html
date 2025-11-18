@@ -7,18 +7,14 @@
     <link th:href="@{/css/general.css}" rel="stylesheet">
 </head>
 <body>
-
     <div th:replace="~{_nav :: navbar}"></div>
-
     <div class="container mt-4">
         <div class="row">
             <div class="col-md-6 offset-md-3 page-container">
                 <h2>Formulario de Cliente</h2>
                 <hr>
                 <form th:action="@{/clientes/guardar}" th:object="${cliente}" method="POST">
-                    
                     <input type="hidden" th:field="*{idCliente}" />
-                    
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre Completo</label>
                         <input type="text" th:field="*{nombre}" class="form-control" id="nombre" placeholder="Ej. Juan Pérez" required>
@@ -35,7 +31,6 @@
                         <label for="direccion" class="form-label">Dirección</label>
                         <input type="text" th:field="*{direccion}" class="form-control" id="direccion" placeholder="Ej. Av. Siempre Viva 123">
                     </div>
-
                     <button type="submit" class="btn btn-success">Guardar Cliente</button>
                     <a th:href="@{/clientes}" class="btn btn-secondary">Cancelar</a>
                 </form>
@@ -43,5 +38,6 @@
         </div>
     </div>
 
+    <div th:replace="~{_nav :: footer-scripts}"></div>
 </body>
 </html>

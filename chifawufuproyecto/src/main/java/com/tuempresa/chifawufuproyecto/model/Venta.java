@@ -26,27 +26,20 @@ public class Venta {
     @Column(nullable = false)
     private String tipoComprobante; // "Boleta" o "Factura"
 
+    // --- CAMPO NUEVO AÑADIDO ---
+    @Column(nullable = false, length = 20)
+    private String metodoDePago; // "Efectivo", "Tarjeta", "Yape", "Plin"
+
     // --- RELACIONES ---
 
-    /**
-     * Relación Muchos-a-Uno: MUCHAS Ventas pertenecen a UN Usuario (Cajero).
-     */
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
-    /**
-     * Relación Muchos-a-Uno: MUCHAS Ventas pueden pertenecer a UN Cliente.
-     * (Es 'nullable' porque para una boleta simple, no necesitamos cliente).
-     */
     @ManyToOne
-    @JoinColumn(name = "id_cliente") // Nota: no es 'nullable = false'
+    @JoinColumn(name = "id_cliente")
     private Cliente cliente;
 
-    /**
-     * Relación Uno-a-Muchos: UNA Venta tiene MUCHOS Detalles (productos).
-     * CascadeType.ALL: Si se borra esta Venta, se borran sus detalles.
-     */
     @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
     private List<DetalleVenta> detalles;
 }
